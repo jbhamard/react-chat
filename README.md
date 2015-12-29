@@ -1,2 +1,19 @@
-# my-angular2-learn
-Let's try to have fun with angular2
+# React-Chat
+`npm install`
+
+## Build the front-end app
+`npm run dev`
+
+or
+
+`npm run dev-watch`
+
+## Run the server
+
+`node server.js`
+
+Then open a few browser tabs at http://localhost:3000
+
+
+# TODO
+A lot :) => User DB, better messages, actual registration...
