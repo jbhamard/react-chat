@@ -1,0 +1,46 @@
+{
+  "name": "react-chat-quickstart",
+  "version": "1.0.0",
+  "scripts": {
+    "clean": "rm -rf public/js public/css",
+    "setup": "mkdir public/js public/css",
+    "reset": "npm run clean && npm run setup",
+    "browserify": "browserify app/js/app.jsx -d -t [ babelify --presets [es2015 react stage-1] ] | exorcist public/js/bundle.map.js > public/js/bundle.js",
+    "browserify-compressed": "browserify app/js/app.jsx -t [ babelify --presets [es2015 react stage-1] ] | uglifyjs -o public/js/bundle.js",
+    "sass-compressed": "node-sass --output-style=compressed app/stylesheets/app.scss > public/css/app.min.css",
+    "sass": "node-sass --source-map public/css/app.css.map  --output-style=expanded app/stylesheets/app.scss -o public/css/",
+    "watch-js": "watch \"npm run browserify\" app/js/",
+    "watch-sass": "watch \"npm run sass\" app/stylesheets/",
+    "watch": "npm-run-all --parallel watch-js watch-sass",
+    "dev-watch": "npm run dev && npm run watch",
+    "dev": "npm-run-all reset --parallel copy-assets browserify sass",
+    "build": "npm-run-all reset --parallel copy-assets browserify-compressed sass-compressed"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.3",
+    "history": "^1.17.0",
+    "jquery": "^2.1.4",
+    "lodash": "^3.10.1",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-router": "latest",
+    "socket.io": "^1.3.7",
+    "socket.io-client": "^1.3.7"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.0.15",
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-1": "^6.3.13",
+    "babelify": "latest",
+    "browserify": "latest",
+    "exorcist": "latest",
+    "fs-extra": "latest",
+    "node-sass": "latest",
+    "npm-run-all": "latest",
+    "path": "latest",
+    "rev-file": "latest",
+    "uglifyjs": "latest",
+    "watch": "latest"
+  }
+}
