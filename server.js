@@ -1,32 +1,44 @@
 var express = require('express')
 var app = express()
+var bodyParser = require('body-parser');
 var http = require('http').Server(app)
 var io = require('socket.io')(http)
+var _ = require('lodash')
+var User = require('./app/backend/user')
 
 // app.use('/static/templates', express.static('./app/templates'));
 // app.use('/app', express.static('./app'));
 app.use(express.static('public'))
-  // app.use('/static/vendor', express.static('./app/vendor'));
+app.use(bodyParser.json());
+// app.use('/static/vendor', express.static('./app/vendor'));
 
 /*
   GLOBAL VARIABLES
 */
-// var USERS = []
-var MESSAGES = []
+var USERS = []
 
 app.get('/', function(req, res) {
   res.sendFile(__dirname + 'public/index.html')
 })
 
-// API
-// app.get('/api/users/register', function(req, res) {
-//   if (MESSAGES.includes(req.query.q))
-//     res.send(false)
-//   else {
-//     MESSAGES.push(req.query.q)
-//     res.send(true)
-//   }
-// })
+// registration API
+app.post('/api/users/register', function(req, res) {
+  console.log(req.body)
+  var u;
+  try {
+    u = new User({
+      nickName: req.body.nickName
+    })
+    res.json({
+      user: u
+    })
+  } catch (e) {
+    console.log(e)
+    res.status(422).json({
+      error: e
+    })
+  }
+})
 
 
 // socket
@@ -42,12 +54,10 @@ io.on('connection', function(socket) {
       text: msg.text,
       id: MESSAGES.length + 1
     }
-    console.log(m);
-    MESSAGES.push(m)
     io.emit('message', m)
   })
 })
 
 http.listen(3000, function() {
-  console.log('listen on *:3000')
+  console.log('ReactChat server listening on *:3000')
 })

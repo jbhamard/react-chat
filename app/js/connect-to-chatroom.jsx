@@ -22,9 +22,9 @@ class ConnectionForm extends React.Component {
     e.preventDefault()
     connection
       .register(this.state.nickName)
-      .then((res) => {
+      .then((user) => {
         this.setState({
-          acceptedNickName: res,
+          acceptedNickName: user.nickName,
           nickName : '',
           error: ''
         })
