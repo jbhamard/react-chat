@@ -1,5 +1,3 @@
-// let NICKNAMES = ['jb']
-
 let connection = {
   register: (nickName) => {
     return new Promise((resolve, reject) => {
@@ -23,19 +21,6 @@ let connection = {
       xmlhttp.onerror = function(e) {
         reject('network error')
       }
-
-      // window.setTimeout(() => {
-      //   if (NICKNAMES.find((element, index, array) => {
-      //       if (element === pseudo) {
-      //         return true
-      //       }
-      //     })) {
-      //     reject('nickname already taken. Please choose another one.')
-      //   } else {
-      //     NICKNAMES.push(pseudo)
-      //     resolve(pseudo)
-      //   }
-      // }, 0)
     })
   }
 }

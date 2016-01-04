@@ -6,16 +6,8 @@ var io = require('socket.io')(http)
 var _ = require('lodash')
 var User = require('./app/backend/user')
 
-// app.use('/static/templates', express.static('./app/templates'));
-// app.use('/app', express.static('./app'));
 app.use(express.static('public'))
 app.use(bodyParser.json());
-// app.use('/static/vendor', express.static('./app/vendor'));
-
-/*
-  GLOBAL VARIABLES
-*/
-var USERS = []
 
 app.get('/', function(req, res) {
   res.sendFile(__dirname + 'public/index.html')
