@@ -24,10 +24,10 @@ class ConnectionForm extends React.Component {
       .register(this.state.nickName)
       .then((user) => {
         this.setState({
-          acceptedNickName: user.nickName,
           nickName : '',
           error: ''
         })
+        this.props.history.pushState({ user: user },'/chat-room')
       })
       .catch((error) => {
         this.setState({
@@ -41,12 +41,11 @@ class ConnectionForm extends React.Component {
   render() {
     return (
       <div>
-        <p>{this.state.acceptedNickName}</p>
         <p>{this.state.error}</p>
         <form className="input-group" onSubmit={this.handleSubmit}>
           <input  className="form-control" type="text" value={this.state.nickName}
-                  name="nickname" onChange={this.handleNicknameChange}/>
-          <input  className="btn btn-primary" type="submit"/>
+                  name="nickname" onChange={this.handleNicknameChange} placeholder="your nickname"/>
+          <input  className="btn btn-primary" type="submit" value="connect"/>
         </form>
       </div>
     )
@@ -57,8 +56,8 @@ class ConnectToChatRoom extends React.Component {
   render() {
     return (
       <div className="well">
-        <h3>Choose your nickname</h3>
-        <ConnectionForm />
+        <p>Pick your nickname, and connect</p>
+        <ConnectionForm history={this.props.history}/>
       </div>
     )
   }

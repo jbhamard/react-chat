@@ -12,7 +12,7 @@ let connection = {
         let res = JSON.parse(this.response)
         console.log(res)
         if (this.status === 200) {
-          resolve(res)
+          resolve(res.user)
         } else {
           reject(res.error)
         }
