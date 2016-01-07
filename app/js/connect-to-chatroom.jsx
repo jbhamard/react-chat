@@ -2,7 +2,7 @@ import connection from './services/connection'
 import React from 'react'
 import { render } from 'react-dom'
 
-class ConnectionForm extends React.Component {
+class ConnectToChatRoom extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -41,23 +41,14 @@ class ConnectionForm extends React.Component {
   render() {
     return (
       <div>
-        <p>{this.state.error}</p>
-        <form className="input-group" onSubmit={this.handleSubmit}>
-          <input  className="form-control" type="text" value={this.state.nickName}
-                  name="nickname" onChange={this.handleNicknameChange} placeholder="your nickname"/>
-          <input  className="btn btn-primary" type="submit" value="connect"/>
+        <form className="form-inline text-center" onSubmit={this.handleSubmit}>
+          <div className="form-group">
+            <input  className="form-control" type="text" value={this.state.nickName}
+                    name="nickname" onChange={this.handleNicknameChange} placeholder="your nickname"/>
+          </div>
+          <button className="btn btn-primary" type="submit">Connect</button>
+          <p>{this.state.error}</p>
         </form>
-      </div>
-    )
-  }
-}
-
-class ConnectToChatRoom extends React.Component {
-  render() {
-    return (
-      <div className="well">
-        <p>Pick your nickname, and connect</p>
-        <ConnectionForm history={this.props.history}/>
       </div>
     )
   }

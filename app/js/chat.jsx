@@ -10,10 +10,8 @@ class Chat extends React.Component {
   render() {
     return (
       <div className="jumbotron">
-        <h1>ReactChat</h1>
-        <ul>
-          {this.props.children}
-        </ul>
+        <h1 className="text-center">WiChat</h1>
+        {this.props.children}
       </div>
     )
   }
