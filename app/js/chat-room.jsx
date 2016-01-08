@@ -1,56 +1,82 @@
 import socket from './services/socket'
+import chatEvents from './chat-events.jsx'
 import React from 'react'
 import { render } from 'react-dom'
 
-let MESSAGES = []
-
-class Message extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
-    return (
-      <li className="message">{this.props.data}</li>
-    )
-  }
-}
+let CHAT_EVENTS = []
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////// MESSAGES /////////////////////////////////////////////////////////////////////////////////////
 class Messages extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      messages: MESSAGES
+      chatEvents: CHAT_EVENTS
     }
   }
 
-  //listen for messages
+  //connect and listen for messages
   componentDidMount = () => {
-    socket.connect()
-    socket.onMessage((m)=>{
-      MESSAGES.push(m)
+    socket
+      .connect(this.props.user)
+      .then((res) => {
+        this.listenForMessages()
+        this.listenForNewUsers()
+        this.listenForLeavingUsers()
+      })
+      .catch((e) => {
+        console.log(e.message)
+      })
+  }
+
+  listenForMessages = () => {
+    socket.onMessage((m) => {
+      CHAT_EVENTS.push(new chatEvents.Message(m))
       this.setState({
-        messages:MESSAGES
+        chatEvents: CHAT_EVENTS
+      })
+    })
+  }
+
+  listenForNewUsers = () => {
+    socket.onUserConnected((c) => {
+      CHAT_EVENTS.push(new chatEvents.UserConnection(c))
+      this.setState({
+        chatEvents: CHAT_EVENTS
+      })
+    })
+  }
+
+  listenForLeavingUsers = () => {
+    socket.onUserDisconnected((c) => {
+      CHAT_EVENTS.push(new chatEvents.UserDisconnection(c))
+      this.setState({
+        chatEvents: CHAT_EVENTS
       })
     })
   }
 
   render() {
     return (
-      <ul className="messages">
-        {this.state.messages.map((m,i) => {
-          return <Message data={m.text} className={i%2 === 0 ? 'even' : 'odd'} key={m.id}/>
-        })}
-      </ul>
+      <div className="messages">  
+        <ul>
+          {this.state.chatEvents.map((e,i) => {
+            return e.component(i)
+          })}
+        </ul>
+      </div>
     )
   }
 }
 
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////// MESSAGE-BAR /////////////////////////////////////////////////////////////////////////////////
 class MessageBar extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       message: ''
     }
@@ -64,7 +90,7 @@ class MessageBar extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    socket.send(this.state.message)
+    socket.send(this.state.message, this.props.user)
     this.setState({
       message:''
     })
@@ -73,15 +99,14 @@ class MessageBar extends React.Component {
   render() {
     return (
       <div>
-        <p>enter a message</p>
-        <form className="input-group" onSubmit={this.handleSubmit}>
+        <form className="form-inline text-center message-bar" onSubmit={this.handleSubmit}>
           <input  type="text" 
                   className="form-control" 
                   name="message" 
                   value={this.state.message} 
                   placeholder="your message" 
                   onChange={this.handleMessageChange}/>
-          <input type="submit" value="Enter" className="btn btn-primary"/>
+          <button type="submit" className="btn btn-primary">Send</button>
         </form>
       </div>
     )
@@ -89,6 +114,27 @@ class MessageBar extends React.Component {
 }
 
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////// WELCOME ///////////////////////////////////////////////////////////////////////////////////////
+class  Welcome extends React.Component {
+  constructor(props){
+    super(props)
+  }
+
+  render() {
+    return (
+      <div>
+        Welcome {this.props.user.nickName} !
+      </div>
+    )
+  }
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////// CHAT-ROOM /////////////////////////////////////////////////////////////////////////////////////
 class ChatRoom extends React.Component {
   constructor(props) {
     super(props)
@@ -96,9 +142,10 @@ class ChatRoom extends React.Component {
 
   render() {
     return (
-      <div className="well">
-        <Messages/>
-        <MessageBar/>
+      <div className="text-center">
+        <Welcome user={this.props.location.state.user}/>
+        <Messages user={this.props.location.state.user}/>
+        <MessageBar user={this.props.location.state.user}/>
       </div>
     )
   }

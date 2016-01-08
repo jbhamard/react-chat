@@ -3,8 +3,6 @@ var _ = require('lodash')
 var USERS = []
 
 function User(config) {
-  console.log(USERS)
-  console.log(config)
   if (!config.nickName) {
     throw ('nickname_is_mandatory')
   }

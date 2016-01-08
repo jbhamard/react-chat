@@ -44,7 +44,7 @@ class ConnectToChatRoom extends React.Component {
         <form className="form-inline text-center" onSubmit={this.handleSubmit}>
           <div className="form-group">
             <input  className="form-control" type="text" value={this.state.nickName}
-                    name="nickname" onChange={this.handleNicknameChange} placeholder="your nickname"/>
+                    name="nickname" onChange={this.handleNicknameChange} placeholder="nickname"/>
           </div>
           <button className="btn btn-primary" type="submit">Connect</button>
           <p>{this.state.error}</p>

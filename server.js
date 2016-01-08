@@ -13,9 +13,11 @@ app.get('/', function(req, res) {
   res.sendFile(__dirname + 'public/index.html')
 })
 
+var MESSAGES = [];
+var CLIENTS = {};
+
 // registration API
 app.post('/api/users/register', function(req, res) {
-  console.log(req.body)
   var u;
   try {
     u = new User({
@@ -25,31 +27,50 @@ app.post('/api/users/register', function(req, res) {
       user: u
     })
   } catch (e) {
-    console.log(e)
     res.status(422).json({
       error: e
     })
   }
 })
 
-
 // socket
 io.on('connection', function(socket) {
-  console.log('user connected')
+
+  socket.on('userConnected', function(user) {
+    var clientUser = _.merge(user, {
+      time: new Date()
+    })
+    console.log('connection')
+    console.log(clientUser)
+    CLIENTS[this.id] = clientUser
+    io.emit('userConnected', clientUser)
+  })
 
   socket.on('disconnect', function() {
-    console.log('user disconnected')
+    var u = CLIENTS[this.id]
+    console.log('disconnection')
+    console.log(u)
+    io.emit('userDisconnected', {
+      user: u.user,
+      time: new Date()
+    })
+
+    CLIENTS[this.id] = null
   })
 
   socket.on('message', function(msg) {
     var m = {
       text: msg.text,
-      id: MESSAGES.length + 1
+      id: MESSAGES.length + 1,
+      user: msg.user,
+      time: new Date()
     }
+    MESSAGES.push(m)
     io.emit('message', m)
   })
+
 })
 
 http.listen(3000, function() {
-  console.log('ReactChat server listening on *:3000')
+  console.log('WiChat server listening on *:3000')
 })
