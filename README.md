@@ -16,4 +16,4 @@ Then open a few browser tabs at http://localhost:3000
 
 
 # TODO
-A lot :) => User DB, better messages, actual registration...
+better styles
